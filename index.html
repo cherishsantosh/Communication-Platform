@@ -8,6 +8,13 @@
 	li{
 		word-wrap: break-word
 	}
+	html, body {
+  		height: 100%;
+	}
+	footer {
+  		position: absolute;
+  		bottom: 0;
+	}
 </style>
 <body>
 	<nav class="navbar navbar-default">
@@ -22,7 +29,7 @@
 		<div class="container">
 			
 			<div class="navbar-header pull-left">
-				<a class="navbar-brand" href="index.php">Communication Platform:</a>
+				<a class="navbar-brand" href="index.php">Wikipedia Communication Platform:</a>
 			</div>
 			<div class="navbar-header pull-right">
 				<p class="navbar-text">
@@ -44,29 +51,65 @@
             <tr>
                 <td rowspan="2" style="vertical-align: text-top;" width="80%">
                 <!-- Video -->
-				<%= user %>
-					<video id="localVideo" width="160" height="120" autoplay></video>
-					<div class="form-control" id="videos" width="160" height="120"></div>
+				
+				<div class="panel panel-primary">
+					<div class="panel-heading">LocalStream : <%= user %></div>
+					<div class="panel-body">
+						<video id="localVideo" width="160" height="120" autoplay></video>
+					</div>
+					<div class="panel-footer"></div>
+					
+				</div>
+				<div class="panel panel-primary">
+					<div class="panel-heading">RemoteStream :</div>
+					<div class="panel-body">
+						<div id="videos" width="160" height="120"></div>
+					</div>
+					<div class="panel-footer"></div>
+					
+				</div>
+					
                 </td>
                 <td style="vertical-align: text-top;height:10%;">
                 <!-- Select box -->
-					<select class="form-control" id="allUsers">
-						<option value="none">select one---</option>
-					</select>
-					<button class="form-control" id="call_btn" type="button" onclick="connect(this);" disabled>Connect</button>
+
+                <div class="panel panel-primary">
+					<div class="panel-heading">Select User :</div>
+					<div class="panel-body">
+						<select class="form-control" id="allUsers">
+							<option value="none">select one---</option>
+						</select>
+						<button class="btn btn-success" id="call_btn" type="button" onclick="connect(this);" disabled>Connect</button>
+					</div>
+					<div class="panel-footer"></div>
+					
+				</div>
+
+					
                 </td>
             </tr>
             <tr>
                 <td style="vertical-align: text-top;">
                 <!-- Chat -->
-	                <div class="form-control"  style="overflow-y: auto;height:80%;" >
-					<h4>Chat Window</h4>
-					<ul  class="form-control" id="chatWindow" ></ul>
-						<div style="position:absolute;bottom:20%;" >
-							<input  placeholder="Type here to Send.." type="text" id="msg" />
-							<button id="send_btn"  type="button" onclick="send(this);" disabled>Send</button>
+
+                <div class="panel panel-primary">
+					<div class="panel-heading">Chat window</div>
+					<div class="panel-body">
+						<div style="overflow-y: auto;height:80%;" >
+						<ul id="chatWindow" ></ul>
+						
+					</div>
+					<div class="form-control">
+							<input  placeholder="Type here to Send.." type="text" id="msg" onkeypress="return runScript(event)" />
+							<!-- <button id="send_btn"  type="button" onclick="send(this);" disabled>Send</button> -->
 						</div>
 					</div>
+					<div class="panel-footer"></div>
+					
+				</div>
+
+
+	               
                 </td>
             </tr>
         </tbody>
@@ -74,7 +117,7 @@
 
 
 
-	
+	 <footer style="color: #333; padding: 2em; margin-top: 1em;">Design and developed by : <a herf="https://github.com/cherishsantosh/Communication-Platform">Santosh Shingare</a> | All Social Network : <a herf="https://twitter.com/cherishsantosh">@cherishsantosh</a> | Mob : +919890984632</footer>
 	
 	
 <!-- <div class="w3-container w3-quarter w3-right" style="overflow-y: auto;height:45%;" >
@@ -113,14 +156,21 @@ peerConnCfg = {'iceServers':
 	}
 	
 	window.onbeforeunload = function() {
-
+logout();
 }
 
-
+function runScript(e) {
+    if (e.keyCode == 13) {
+        var tb = document.getElementById("msg");
+        //eval(tb.value);
+        send(tb.value)
+        return false;
+    }
+}
 	socket.on('connect',function(){
 		socket.emit('addUser',user,room);
-		document.getElementById("heading").innerHTML="Welcome "+user;
-		document.getElementById("roomname").innerHTML="Room : "+room;
+		document.getElementById("heading").innerHTML="Welcome User : "+user;
+		document.getElementById("roomname").innerHTML="Roomname : "+room;
 		document.getElementById("send_btn").disabled=false;
 		document.getElementById("call_btn").disabled=false;
 	});
