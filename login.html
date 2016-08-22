@@ -1,0 +1,31 @@
+<link rel="stylesheet" href="bootstrap.min.css" >
+<style type="text/css">
+  .loginforms{
+    position:absolute;
+    margin-top:10%;
+    margin-left:25%;
+  }
+  .logindiv{
+    box-shadow: 10px 10px 5px #888888;
+    padding-left:30px;
+    padding-bottom:30px;
+    padding-right:30px;
+    padding-top:30px;
+  }
+  .hidediv{
+    display:none;
+  }
+</style>
+<form class="loginforms"  action="/" method="post">
+  <div class="logindiv">
+    <h3>Login</h3>
+    <span style="color:#FF0000;"><b><%= msg %></b></span><br>
+    <span> Username:</span>
+    <input type="text" name="userName" placeholder="username" required />
+    <span> Roomname:</span>
+    <input type="text" name="room" placeholder="room.." required />
+    <label class="hidediv" ><b>Enter Auth Key:</b></label>
+    <input class="hidediv" name="auth" value="webrtc@123#" required />
+    <button type="submit" class="btn btn-success">Submit</button>
+  </div>
+</form>
