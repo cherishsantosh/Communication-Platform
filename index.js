@@ -40,9 +40,9 @@ app.post('/', function(request, response) {
     var userName = request.body.userName;
     var roomName = request.body.room;
     var authKey = request.body.auth;
-    console.log("username entered :" + userName + " room entered " + roomName + " key is : " + authKey);
+    console.log(new Date().toLocaleString()+" USERNAME:" + userName + " ROOM:" + roomName + " KEY:" + authKey);
     var patt = /[^a-z\d]/i;
-    console.log("Not valid username: (false says valid)" + patt.test(userName));
+    //console.log("Not valid username: (false says valid)" + patt.test(userName));
     if ((userName == "" || roomName == "") || (patt.test(userName) || patt.test(roomName))) {
         var html = "";
         ejs.renderFile(__dirname + '/login.html', {
@@ -87,10 +87,10 @@ app.use(express.static(__dirname));
 
 
 io.sockets.on('connection', function(socket) {
-    console.log('a user connected: ' + socket);
+//    console.log('a user connected: ' + socket);
 
     socket.on('addUser', function(username, room) {
-        console.log('Adding user' + username);
+        console.log(new Date().toLocaleString()+' Adding user: ' + username);
         socket.username = username;
         socket.room = room;
         usernames[username] = socket;
@@ -102,6 +102,8 @@ io.sockets.on('connection', function(socket) {
         socket.broadcast.to(socket.room).emit('updateChat', 'SERVER', socket.username + ' has join the room: ' + socket.room);
         socket.broadcast.to(socket.room).emit('updateUsers', Object.keys(rooms[room]), username);
         socket.emit('updateUsers', Object.keys(rooms[room]), username);
+
+        socket.broadcast.to(socket.room).emit('connuser', Object.keys(rooms[room]), username);
     });
 
     socket.on('chatMessage', function(data) {
@@ -116,7 +118,7 @@ io.sockets.on('connection', function(socket) {
         if ((!!socket) && rooms[socket.room][socket.username])
             delete rooms[socket.room][socket.username];
         if (!(!socket)) {
-            console.log('left');
+            console.log(new Date().toLocaleString()+' LEFTUSER: '+socket.username);
             socket.broadcast.to(socket.room).emit('updateUsers', Object.keys(rooms[socket.room]), "");
             socket.broadcast.to(socket.room).emit('updateChat', 'SERVER', socket.username + ' has left', socket.username);
             socket.leave(socket.room);
@@ -124,11 +126,16 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('chat message', function(msg) {
+        console.log("MESSAGE : "+msg);
+        socket.broadcast.to(socket.room).emit('updateChat', 'SERVER', "SDP", msg);
         var signal = JSON.parse(msg);
+         console.log("SIGNAL : ");
+          console.log(signal);
         var to = signal.choosed;
-        console.log("Received: " + msg + " to be send to: " + signal.choosed);
+          console.log("TO  : "+to);
+        console.log("<br><br><br>Received: " + msg + " to be send to: " + signal.choosed);
         signal.choosed = socket.username;
-        console.log('Now sending to: ' + to + " choosing: " + signal.choosed);
+        console.log('<br><br><br>Now sending to: ' + to + " choosing: " + signal.choosed);
         msg = JSON.stringify(signal);
         usernames[to].emit('chat message', msg);
     });
